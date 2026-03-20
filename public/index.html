@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>家庭积分管理系统</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- 登录页面 -->
+        <div id="login-page" class="page">
+            <div class="login-header">
+                <div class="logo">🏠</div>
+                <h1>家庭积分管理</h1>
+                <p>V2.0</p>
+            </div>
+            
+            <div class="login-form">
+                <div class="form-group">
+                    <select id="child-select">
+                        <option value="">选择孩子</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="child-password" placeholder="密码">
+                </div>
+                <button class="btn btn-primary btn-block" onclick="childLogin()">孩子登录</button>
+                
+                <p class="divider"><a href="#" onclick="showAdminLogin();return false;">管理员入口</a></p>
+            </div>
+            
+            <div id="admin-login" class="login-form" style="display:none">
+                <div class="form-group">
+                    <input type="text" id="username" placeholder="管理员账号">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password" placeholder="密码">
+                </div>
+                <button class="btn btn-warning btn-block" onclick="login()">管理员登录</button>
+                <p class="hint"><a href="#" onclick="showChildLogin();return false;">← 返回孩子登录</a></p>
+            </div>
+        </div>
+        
+        <!-- 管理员主页 -->
+        <div id="admin-home" class="page hidden">
+            <div class="header">
+                <h2>积分管理</h2>
+                <button class="btn-icon" onclick="logout()">🚪</button>
+            </div>
+            
+            <div class="bottom-nav">
+                <button class="nav-btn active" data-tab="home" onclick="showAdminTab('home')">🏠 首页</button>
+                <button class="nav-btn" data-tab="records" onclick="showAdminTab('records')">📋 记录</button>
+                <button class="nav-btn" data-tab="settings" onclick="showAdminTab('settings')">⚙️ 设置</button>
+            </div>
+            
+            <!-- 首页：孩子列表 -->
+            <div id="tab-home" class="tab-panel active">
+                <div class="section-header">
+                    <h3>孩子列表</h3>
+                    <button class="btn btn-sm" onclick="showAddChild()">+ 添加孩子</button>
+                </div>
+                <div id="children-list"></div>
+            </div>
+            
+            <!-- 积分记录 -->
+            <div id="tab-records" class="tab-panel">
+                <h3>积分记录</h3>
+                
+                <div class="filter-bar">
+                    <select id="filter-child" onchange="loadAllRecords()">
+                        <option value="">全部孩子</option>
+                    </select>
+                    <select id="filter-type" onchange="loadAllRecords()">
+                        <option value="">全部类型</option>
+                        <option value="bonus">奖励积分</option>
+                        <option value="deduct">扣减积分</option>
+                        <option value="redeem">兑换</option>
+                    </select>
+                </div>
+                <div class="filter-bar">
+                    <input type="date" id="filter-date-start" onchange="loadAllRecords()" placeholder="开始日期">
+                    <span>至</span>
+                    <input type="date" id="filter-date-end" onchange="loadAllRecords()" placeholder="结束日期">
+                </div>
+                <div id="all-records" class="record-list"></div>
+            </div>
+            
+            <!-- 设置 -->
+            <div id="tab-settings" class="tab-panel">
+                <h3>系统设置</h3>
+                
+                <div class="settings-section collapsible collapsed" onclick="toggleSection(this)">
+                    <h4>项目管理 <span class="collapse-icon">▼</span></h4>
+                    <div class="collapsible-content">
+                        <div class="tabs sub-tabs">
+                            <button class="tab-btn active" data-subtab="bonus" onclick="showItemSubTab('bonus');event.stopPropagation()">奖励积分</button>
+                            <button class="tab-btn" data-subtab="deduct" onclick="showItemSubTab('deduct');event.stopPropagation()">处罚积分</button>
+                        </div>
+                        <div id="bonus-items-list"></div>
+                        <div id="deduct-items-list" class="hidden"></div>
+                        <button class="btn btn-sm btn-primary" style="margin-top:10px" onclick="showAddItem();event.stopPropagation()">+ 添加项目</button>
+                    </div>
+                </div>
+                
+                <div class="settings-section collapsible collapsed" onclick="toggleSection(this)">
+                    <h4>奖励管理 <span class="collapse-icon">▼</span></h4>
+                    <div class="collapsible-content">
+                        <div id="rewards-list"></div>
+                        <button class="btn btn-sm btn-primary" style="margin-top:10px" onclick="showAddReward()">+ 添加奖励</button>
+                    </div>
+                </div>
+                
+                <div class="settings-section collapsible collapsed" onclick="toggleSection(this)">
+                    <h4>密码修改 <span class="collapse-icon">▼</span></h4>
+                    <div class="collapsible-content">
+                        <div class="form-group">
+                            <input type="password" id="old-password" placeholder="原密码">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="new-password" placeholder="新密码">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="confirm-password" placeholder="确认新密码">
+                        </div>
+                        <button class="btn btn-primary" onclick="changePassword()">修改密码</button>
+                    </div>
+                </div>
+                
+                <div class="settings-section collapsible collapsed" onclick="toggleSection(this)">
+                    <h4>积分规则 <span class="collapse-icon">▼</span></h4>
+                    <div class="collapsible-content">
+                        <div class="form-group">
+                            <label>每日积分上限</label>
+                            <input type="number" id="rule-daily-limit" value="50">
+                        </div>
+                        <div class="form-group">
+                            <label>每日扣分上限</label>
+                            <input type="number" id="rule-deduct-limit" value="30">
+                        </div>
+                        <div class="form-group">
+                            <label><input type="checkbox" id="rule-allow-negative"> 允许负积分</label>
+                        </div>
+                        <button class="btn btn-primary" onclick="saveRules()">保存规则</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 孩子主页 -->
+        <div id="child-home" class="page hidden">
+            <div class="header">
+                <h2 id="child-name-display">孩子名字</h2>
+                <button class="btn-icon" onclick="logout()">🚪</button>
+            </div>
+            
+            <div class="points-display">
+                <div class="big-points" id="child-points">0</div>
+                <div>当前积分</div>
+            </div>
+            
+            <div class="child-tabs">
+                <button class="nav-btn active" data-tab="bonus" onclick="showChildTab('bonus')">奖励积分</button>
+                <button class="nav-btn" data-tab="deduct" onclick="showChildTab('deduct')">处罚积分</button>
+                <button class="nav-btn" data-tab="shop" onclick="showChildTab('shop')">兑换</button>
+                <button class="nav-btn" data-tab="history" onclick="showChildTab('history')">记录</button>
+            </div>
+            
+            <div id="child-bonus" class="tab-panel active">
+                <div class="item-grid" id="child-bonus-items"></div>
+            </div>
+            
+            <div id="child-deduct" class="tab-panel">
+                <div class="item-grid" id="child-deduct-items"></div>
+            </div>
+            
+            <div id="child-shop" class="tab-panel">
+                <div id="child-rewards" class="item-list"></div>
+            </div>
+            
+            <div id="child-history" class="tab-panel">
+                <div id="child-records" class="record-list"></div>
+            </div>
+        </div>
+        
+        <!-- 弹窗 -->
+        <div id="item-modal" class="modal">
+            <div class="modal-content">
+                <h2 id="item-modal-title">添加项目</h2>
+                <input type="hidden" id="item-id">
+                <div class="form-group">
+                    <input type="text" id="item-name" placeholder="项目名称">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="item-points" placeholder="积分值">
+                </div>
+                <div class="form-group">
+                    <select id="item-category">
+                        <option value="学习">学习</option>
+                        <option value="生活">生活</option>
+                        <option value="习惯">习惯</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label><input type="checkbox" id="item-is-bonus" checked> 奖励积分项目</label>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-primary" onclick="saveItem()">保存</button>
+                    <button class="btn btn-secondary" onclick="closeModal('item-modal')">取消</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="reward-modal" class="modal">
+            <div class="modal-content">
+                <h2 id="reward-modal-title">添加奖励</h2>
+                <input type="hidden" id="reward-id">
+                <div class="form-group">
+                    <input type="text" id="reward-name" placeholder="奖励名称">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="reward-points" placeholder="所需积分">
+                </div>
+                <div class="form-group">
+                    <select id="reward-category">
+                        <option value="特权">特权</option>
+                        <option value="物质">物质</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-primary" onclick="saveReward()">保存</button>
+                    <button class="btn btn-secondary" onclick="closeModal('reward-modal')">取消</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="child-modal" class="modal">
+            <div class="modal-content">
+                <h2 id="child-modal-title">添加孩子</h2>
+                <input type="hidden" id="child-edit-id">
+                <div class="form-group">
+                    <input type="text" id="child-edit-name" placeholder="孩子姓名">
+                </div>
+                <div class="form-group">
+                    <input type="number" id="child-edit-age" placeholder="年龄">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="child-edit-password" placeholder="登录密码">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-primary" onclick="saveChild()">保存</button>
+                    <button class="btn btn-secondary" onclick="closeModal('child-modal')">取消</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="points-modal" class="modal">
+            <div class="modal-content">
+                <h2>调整积分 - <span id="points-child-name"></span></h2>
+                <input type="hidden" id="points-child-id">
+                <div class="form-group">
+                    <input type="number" id="adjust-points" placeholder="积分（正数加分，负数扣分）">
+                </div>
+                <div class="form-group">
+                    <input type="text" id="adjust-reason" placeholder="原因">
+                </div>
+                <div class="modal-buttons">
+                    <button class="btn btn-primary" onclick="adjustPoints()">确定</button>
+                    <button class="btn btn-secondary" onclick="closeModal('points-modal')">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>

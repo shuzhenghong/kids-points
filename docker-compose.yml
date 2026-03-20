@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  kids-points:
+    build: .
+    container_name: kids-points
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - TZ=Asia/Shanghai
