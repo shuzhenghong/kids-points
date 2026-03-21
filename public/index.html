@@ -465,16 +465,13 @@ function toggleCollapse(id) {
     var currentCollapse = document.getElementById(id);
     var header = currentCollapse.previousElementSibling;
     var arrow = header ? header.querySelector('.collapse-arrow') : null;
-    var parentCollapse = currentCollapse.closest('.collapse-content');
     
-    // 获取所有折叠项
-    var allCollapses = parentCollapse 
-        ? parentCollapse.querySelectorAll('.collapse-content') 
-        : document.querySelectorAll('.card > .collapse-content');
+    // 获取所有顶级折叠项（直接在 .card 下的 .collapse-content）
+    var allTopCollapses = document.querySelectorAll('.card > .collapse-content');
     
-    // 关闭所有其他折叠项
-    allCollapses.forEach(function(c) {
-        if (c.id !== id && c.classList.contains('active')) {
+    // 关闭所有顶级折叠项
+    allTopCollapses.forEach(function(c) {
+        if (c.id !== id) {
             c.classList.remove('active');
             var sibHeader = c.previousElementSibling;
             var sibArrow = sibHeader ? sibHeader.querySelector('.collapse-arrow') : null;
