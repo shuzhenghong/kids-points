@@ -1,278 +1,537 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>家庭积分管理系统</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>家庭积分管理</title>
+<script src="js/chart.js"></script>
+<style>
+:root {
+    --primary-color: #1976D2;
+    --bg-color: #f5f5f5;
+    --card-color: #ffffff;
+}
+
+body{font-family:Arial,sans-serif;margin:0;background:var(--bg-color);-webkit-tap-highlight-color:transparent}
+.app{max-width:480px;margin:0 auto;background:var(--card-color);min-height:100vh;box-shadow:0 0 10px rgba(0,0,0,0.1)}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:var(--primary-color)}
+.login-box{background:var(--card-color);border-radius:16px;padding:32px;width:100%;max-width:300px;box-shadow:0 4px 20px rgba(0,0,0,0.15)}
+h2{color:var(--primary-color);margin:0 0 20px 0;text-align:center}
+input,select{width:100%;padding:14px;margin-bottom:16px;border:1px solid #ddd;border-radius:8px;box-sizing:border-box;font-size:16px}
+.btn{width:100%;padding:14px;background:var(--primary-color);color:#fff;border:none;border-radius:8px;cursor:pointer;margin-bottom:8px;font-size:16px;transition:all 0.2s ease;-webkit-appearance:none;-moz-appearance:none;appearance:none}
+.btn:active{transform:scale(0.98);opacity:0.9}
+.header{background:linear-gradient(135deg,var(--primary-color),#1565C0);color:#fff;padding:16px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+.selector{padding:12px 16px;background:var(--card-color);border-bottom:1px solid var(--bg-color)}
+.selector select{width:100%;padding:12px 16px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;background:var(--bg-color);-webkit-appearance:none;-moz-appearance:none;appearance:none;cursor:pointer;transition:all 0.2s ease}
+.selector select:hover{background:#f0f0f0;border-color:var(--primary-color)}
+.selector select:focus{outline:none;border-color:var(--primary-color);box-shadow:0 0 0 2px rgba(25,118,210,0.2)}
+.content{padding:16px;padding-bottom:80px}
+.card{background:var(--card-color);border-radius:12px;padding:16px;margin-bottom:12px;box-shadow:0 2px 4px rgba(0,0,0,0.05)}
+.points{background:linear-gradient(135deg,#42A5F5,var(--primary-color));color:#fff;border-radius:16px;padding:24px;text-align:center;margin-bottom:16px;box-shadow:0 4px 12px rgba(25,118,210,0.3)}
+.points .num{font-size:48px;font-weight:bold}
+.points .label{font-size:14px;opacity:0.9}
+.points .name{font-size:16px;margin-bottom:8px}
+.sub-tabs{display:flex;gap:8px;margin-bottom:12px}
+.sub-tab{flex:1;padding:12px;text-align:center;background:#f5f5f5;border-radius:8px;font-size:13px;cursor:pointer;transition:all 0.2s ease}
+.sub-tab:active{transform:scale(0.95)}
+.sub-tab.active{background:#1976D2;color:#fff}
+.points-btn{padding:16px;border-radius:12px;text-align:center;margin-bottom:8px;cursor:pointer;transition:all 0.2s ease}
+.points-btn:active{transform:scale(0.98)}
+.points-btn.bonus{background:#E8F5E9;color:#4CAF50}
+.points-btn.deduct{background:#FFEBEE;color:#F44336}
+.points-btn .name{font-size:14px;font-weight:500}
+.points-btn .pts{font-size:18px;font-weight:bold}
+.item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #f5f5f5}
+.pts-tag{padding:4px 10px;border-radius:12px;font-size:13px;font-weight:bold}
+.pts-plus{background:#E8F5E9;color:#4CAF50}
+.sub-tab.active{background:var(--primary-color);color:#fff}
+.tabs{position:fixed;bottom:0;left:50%;transform:translateX(-50%);max-width:480px;width:100%;background:var(--card-color);display:flex;border-top:1px solid var(--bg-color);box-shadow:0 -2px 10px rgba(0,0,0,0.05)}
+.tab{flex:1;padding:14px 8px;text-align:center;font-size:11px;color:#999;cursor:pointer;transition:all 0.2s ease}
+.tab:active{background:var(--bg-color)}
+.tab.active{color:var(--primary-color);background:#E3F2FD}
+.tab-icon{font-size:20px;display:block;margin-bottom:4px}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:16px}
+.modal.active{display:flex}
+.modal-content{background:#fff;border-radius:16px;width:100%;max-width:360px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,0.2)}
+.modal-title{font-size:18px;font-weight:bold;margin-bottom:16px;text-align:center}
+.modal-buttons{display:flex;gap:8px;margin-top:20px}
+.modal-buttons .btn{flex:1}
+.stats{text-align:center;padding:20px}
+.stats .num{font-size:32px;font-weight:bold;color:#1976D2}
+.stats .lbl{font-size:14px;color:#666}
+.stats-row{display:flex;gap:12px;margin-top:12px}
+.stats-col{flex:1;padding:16px;background:#f5f5f5;border-radius:12px;text-align:center}
+.stats-col .num{font-size:24px;font-weight:bold}
+.setting{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #f5f5f5}
+.btn-group{display:flex;gap:6px}
+.btn-group button{padding:6px 12px;font-size:12px;background:#42A5F5;color:#fff;border:none;border-radius:4px;cursor:pointer;transition:all 0.2s ease}
+.btn-group button:active{transform:scale(0.95)}
+.btn-group .del{background:#F44336}
+.collapse-header{display:flex;justify-content:space-between;align-items:center;padding:14px 0;cursor:pointer;border-bottom:1px solid #f5f5f5;transition:all 0.2s ease}
+.collapse-header:active{background:#f5f5f5}
+.collapse-content{display:none;padding:12px 0}
+.collapse-content.active{display:block}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:8px;font-size:14px;z-index:2000;opacity:0;transition:opacity 0.3s}
+.toast.show{opacity:1}
+.hidden{display:none}
+.empty{text-align:center;padding:40px;color:#999}
+.collapse-header{display:flex;justify-content:space-between;align-items:center;padding:12px 0;cursor:pointer;border-bottom:1px solid #f5f5f5}
+.collapse-content{display:none;padding:8px 0}
+.collapse-content.active{display:block}
+</style>
 </head>
 <body>
-    <div id="app">
-        <!-- 登录页面 -->
-        <div id="login-page" class="page">
-            <div class="login-header">
-                <div class="logo">🏠</div>
-                <h1>家庭积分管理</h1>
-                <p>V2.0</p>
-            </div>
-            
-            <div class="login-form">
-                <div class="form-group">
-                    <select id="child-select">
-                        <option value="">选择孩子</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <input type="password" id="child-password" placeholder="密码">
-                </div>
-                <button class="btn btn-primary btn-block" onclick="childLogin()">孩子登录</button>
-                
-                <p class="divider"><a href="#" onclick="showAdminLogin();return false;">管理员入口</a></p>
-            </div>
-            
-            <div id="admin-login" class="login-form" style="display:none">
-                <div class="form-group">
-                    <input type="text" id="username" placeholder="管理员账号">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="password" placeholder="密码">
-                </div>
-                <button class="btn btn-warning btn-block" onclick="login()">管理员登录</button>
-                <p class="hint"><a href="#" onclick="showChildLogin();return false;">← 返回孩子登录</a></p>
-            </div>
-        </div>
-        
-        <!-- 管理员主页 -->
-        <div id="admin-home" class="page hidden">
-            <div class="header">
-                <h2>积分管理</h2>
-                <button class="btn-icon" onclick="logout()">🚪</button>
-            </div>
-            
-            <div class="bottom-nav">
-                <button class="nav-btn active" data-tab="home" onclick="showAdminTab('home')">🏠 首页</button>
-                <button class="nav-btn" data-tab="records" onclick="showAdminTab('records')">📋 记录</button>
-                <button class="nav-btn" data-tab="settings" onclick="showAdminTab('settings')">⚙️ 设置</button>
-            </div>
-            
-            <!-- 首页：孩子列表 -->
-            <div id="tab-home" class="tab-panel active">
-                <div class="section-header">
-                    <h3>孩子列表</h3>
-                    <button class="btn btn-sm" onclick="showAddChild()">+ 添加孩子</button>
-                </div>
-                <div id="children-list"></div>
-            </div>
-            
-            <!-- 积分记录 -->
-            <div id="tab-records" class="tab-panel">
-                <h3>积分记录</h3>
-                
-                <div class="filter-bar">
-                    <select id="filter-child" onchange="loadAllRecords()">
-                        <option value="">全部孩子</option>
-                    </select>
-                    <select id="filter-type" onchange="loadAllRecords()">
-                        <option value="">全部类型</option>
-                        <option value="bonus">奖励积分</option>
-                        <option value="deduct">扣减积分</option>
-                        <option value="redeem">兑换</option>
-                    </select>
-                </div>
-                <div class="filter-bar">
-                    <input type="date" id="filter-date-start" onchange="loadAllRecords()" placeholder="开始日期">
-                    <span>至</span>
-                    <input type="date" id="filter-date-end" onchange="loadAllRecords()" placeholder="结束日期">
-                </div>
-                <div id="all-records" class="record-list"></div>
-            </div>
-            
-            <!-- 设置 -->
-            <div id="tab-settings" class="tab-panel">
-                <h3>系统设置</h3>
-                
-                <div class="settings-section collapsible collapsed" onclick="toggleSection(this)">
-                    <h4>项目管理 <span class="collapse-icon">▼</span></h4>
-                    <div class="collapsible-content">
-                        <div class="tabs sub-tabs">
-                            <button class="tab-btn active" data-subtab="bonus" onclick="showItemSubTab('bonus');event.stopPropagation()">奖励积分</button>
-                            <button class="tab-btn" data-subtab="deduct" onclick="showItemSubTab('deduct');event.stopPropagation()">处罚积分</button>
-                        </div>
-                        <div id="bonus-items-list"></div>
-                        <div id="deduct-items-list" class="hidden"></div>
-                        <button class="btn btn-sm btn-primary" style="margin-top:10px" onclick="showAddItem();event.stopPropagation()">+ 添加项目</button>
-                    </div>
-                </div>
-                
-                <div class="settings-section collapsible collapsed" onclick="toggleSection(this)">
-                    <h4>奖励管理 <span class="collapse-icon">▼</span></h4>
-                    <div class="collapsible-content">
-                        <div id="rewards-list"></div>
-                        <button class="btn btn-sm btn-primary" style="margin-top:10px" onclick="showAddReward()">+ 添加奖励</button>
-                    </div>
-                </div>
-                
-                <div class="settings-section collapsible collapsed" onclick="toggleSection(this)">
-                    <h4>密码修改 <span class="collapse-icon">▼</span></h4>
-                    <div class="collapsible-content">
-                        <div class="form-group">
-                            <input type="password" id="old-password" placeholder="原密码">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" id="new-password" placeholder="新密码">
-                        </div>
-                        <div class="form-group">
-                            <input type="password" id="confirm-password" placeholder="确认新密码">
-                        </div>
-                        <button class="btn btn-primary" onclick="changePassword()">修改密码</button>
-                    </div>
-                </div>
-                
-                <div class="settings-section collapsible collapsed" onclick="toggleSection(this)">
-                    <h4>积分规则 <span class="collapse-icon">▼</span></h4>
-                    <div class="collapsible-content">
-                        <div class="form-group">
-                            <label>每日积分上限</label>
-                            <input type="number" id="rule-daily-limit" value="50">
-                        </div>
-                        <div class="form-group">
-                            <label>每日扣分上限</label>
-                            <input type="number" id="rule-deduct-limit" value="30">
-                        </div>
-                        <div class="form-group">
-                            <label><input type="checkbox" id="rule-allow-negative"> 允许负积分</label>
-                        </div>
-                        <button class="btn btn-primary" onclick="saveRules()">保存规则</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 孩子主页 -->
-        <div id="child-home" class="page hidden">
-            <div class="header">
-                <h2 id="child-name-display">孩子名字</h2>
-                <button class="btn-icon" onclick="logout()">🚪</button>
-            </div>
-            
-            <div class="points-display">
-                <div class="big-points" id="child-points">0</div>
-                <div>当前积分</div>
-            </div>
-            
-            <div class="child-tabs">
-                <button class="nav-btn active" data-tab="bonus" onclick="showChildTab('bonus')">奖励积分</button>
-                <button class="nav-btn" data-tab="deduct" onclick="showChildTab('deduct')">处罚积分</button>
-                <button class="nav-btn" data-tab="shop" onclick="showChildTab('shop')">兑换</button>
-                <button class="nav-btn" data-tab="history" onclick="showChildTab('history')">记录</button>
-            </div>
-            
-            <div id="child-bonus" class="tab-panel active">
-                <div class="item-grid" id="child-bonus-items"></div>
-            </div>
-            
-            <div id="child-deduct" class="tab-panel">
-                <div class="item-grid" id="child-deduct-items"></div>
-            </div>
-            
-            <div id="child-shop" class="tab-panel">
-                <div id="child-rewards" class="item-list"></div>
-            </div>
-            
-            <div id="child-history" class="tab-panel">
-                <div id="child-records" class="record-list"></div>
-            </div>
-        </div>
-        
-        <!-- 弹窗 -->
-        <div id="item-modal" class="modal">
-            <div class="modal-content">
-                <h2 id="item-modal-title">添加项目</h2>
-                <input type="hidden" id="item-id">
-                <div class="form-group">
-                    <input type="text" id="item-name" placeholder="项目名称">
-                </div>
-                <div class="form-group">
-                    <input type="number" id="item-points" placeholder="积分值">
-                </div>
-                <div class="form-group">
-                    <select id="item-category">
-                        <option value="学习">学习</option>
-                        <option value="生活">生活</option>
-                        <option value="习惯">习惯</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label><input type="checkbox" id="item-is-bonus" checked> 奖励积分项目</label>
-                </div>
-                <div class="modal-buttons">
-                    <button class="btn btn-primary" onclick="saveItem()">保存</button>
-                    <button class="btn btn-secondary" onclick="closeModal('item-modal')">取消</button>
-                </div>
-            </div>
-        </div>
-        
-        <div id="reward-modal" class="modal">
-            <div class="modal-content">
-                <h2 id="reward-modal-title">添加奖励</h2>
-                <input type="hidden" id="reward-id">
-                <div class="form-group">
-                    <input type="text" id="reward-name" placeholder="奖励名称">
-                </div>
-                <div class="form-group">
-                    <input type="number" id="reward-points" placeholder="所需积分">
-                </div>
-                <div class="form-group">
-                    <select id="reward-category">
-                        <option value="特权">特权</option>
-                        <option value="物质">物质</option>
-                    </select>
-                </div>
-                <div class="modal-buttons">
-                    <button class="btn btn-primary" onclick="saveReward()">保存</button>
-                    <button class="btn btn-secondary" onclick="closeModal('reward-modal')">取消</button>
-                </div>
-            </div>
-        </div>
-        
-        <div id="child-modal" class="modal">
-            <div class="modal-content">
-                <h2 id="child-modal-title">添加孩子</h2>
-                <input type="hidden" id="child-edit-id">
-                <div class="form-group">
-                    <input type="text" id="child-edit-name" placeholder="孩子姓名">
-                </div>
-                <div class="form-group">
-                    <input type="number" id="child-edit-age" placeholder="年龄">
-                </div>
-                <div class="form-group">
-                    <input type="password" id="child-edit-password" placeholder="登录密码">
-                </div>
-                <div class="modal-buttons">
-                    <button class="btn btn-primary" onclick="saveChild()">保存</button>
-                    <button class="btn btn-secondary" onclick="closeModal('child-modal')">取消</button>
-                </div>
-            </div>
-        </div>
-        
-        <div id="points-modal" class="modal">
-            <div class="modal-content">
-                <h2>调整积分 - <span id="points-child-name"></span></h2>
-                <input type="hidden" id="points-child-id">
-                <div class="form-group">
-                    <input type="number" id="adjust-points" placeholder="积分（正数加分，负数扣分）">
-                </div>
-                <div class="form-group">
-                    <input type="text" id="adjust-reason" placeholder="原因">
-                </div>
-                <div class="modal-buttons">
-                    <button class="btn btn-primary" onclick="adjustPoints()">确定</button>
-                    <button class="btn btn-secondary" onclick="closeModal('points-modal')">取消</button>
-                </div>
-            </div>
-        </div>
-    </div>
+<div id="loginScreen" class="login">
+<div class="login-box">
+<h2>🏠 家庭积分管理</h2>
+<p style="text-align:center;color:#666;margin-bottom:20px">V3.0</p>
+<form id="loginForm">
+<input type="text" id="username" name="username" value="admin" placeholder="管理员账号" autocomplete="off">
+<input type="password" id="password" name="password" value="123456" placeholder="密码" autocomplete="off">
+<button type="submit" class="btn">登录</button>
+</form>
+</div></div>
+<div id="mainApp" class="app hidden">
+<div class="header"><span>家庭积分管理</span><span onclick="logout()">👤 退出</span></div>
+<div class="selector"><select id="childSelect"></select></div>
+<div class="content" id="mainContent"></div>
+<div class="tabs">
+<div class="tab active" id="tab0" onclick="switchTab(0)"><span class="tab-icon">💰</span>积分</div>
+<div class="tab" id="tab1" onclick="switchTab(1)"><span class="tab-icon">📊</span>统计</div>
+<div class="tab" id="tab2" onclick="switchTab(2)"><span class="tab-icon">⚙️</span>设置</div>
+</div></div>
+<div id="itemModal" class="modal">
+<div class="modal-content">
+<div class="modal-title" id="itemModalTitle">添加</div>
+<input type="text" id="itemName" placeholder="名称">
+<input type="number" id="itemPoints" placeholder="积分">
+<select id="itemCategory"><option value="学习">学习</option><option value="生活">生活</option><option value="习惯">习惯</option></select>
+<div class="modal-buttons"><button type="button" class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="closeModal('itemModal')">取消</button><button type="button" class="btn" onclick="saveItem()">保存</button></div>
+</div></div>
+<div id="rewardModal" class="modal">
+<div class="modal-content">
+<div class="modal-title" id="rewardModalTitle">添加奖励</div>
+<input type="text" id="rewardName" placeholder="名称">
+<input type="number" id="rewardPoints" placeholder="所需积分">
+<select id="rewardCategory"><option value="物质">物质</option><option value="特权">特权</option></select>
+<div class="modal-buttons"><button type="button" class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="closeModal('rewardModal')">取消</button><button type="button" class="btn" onclick="saveReward()">保存</button></div>
+</div></div>
+<div id="childModal" class="modal">
+<div class="modal-content">
+<div class="modal-title" id="childModalTitle">添加孩子</div>
+<input type="text" id="childName" placeholder="姓名">
+<input type="number" id="childAge" placeholder="年龄">
+<div class="modal-buttons"><button type="button" class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="closeModal('childModal')">取消</button><button type="button" class="btn" onclick="saveChild()">保存</button></div>
+</div></div>
+<div id="passwordModal" class="modal">
+<div class="modal-content">
+<div class="modal-title">修改密码</div>
+<input type="password" id="oldPassword" placeholder="原密码">
+<input type="password" id="newPassword" placeholder="新密码">
+<div class="modal-buttons"><button type="button" class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="closeModal('passwordModal')">取消</button><button type="button" class="btn" onclick="changePassword()">确定</button></div>
+</div></div>
+<div id="adminModal" class="modal">
+<div class="modal-content">
+<div class="modal-title" id="adminModalTitle">添加管理员</div>
+<input type="text" id="adminUsername" placeholder="账号">
+<input type="text" id="adminNickname" placeholder="昵称">
+<input type="password" id="adminPassword" placeholder="密码">
+<div class="modal-buttons"><button type="button" class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="closeModal('adminModal')">取消</button><button type="button" class="btn" onclick="saveAdmin()">保存</button></div>
+</div></div>
+<div id="toast" class="toast"></div>
+<script>
+var API = window.location.origin;
+var currentUser = null, currentChildId = null, currentTab = 0, currentSubTab = 'bonus';
+var editingItemId = null, editingItemType = null, editingRewardId = null, editingChildId = null, editingAdminId = null;
+var children = [], bonusItems = [], deductItems = [], rewards = [], records = [], stats = [], admins = [];
+var recordPage = 1, recordsPerPage = 10;
+var recordFilter = { type: '', days: '' };
+
+document.getElementById('loginForm').onsubmit = function(e){
+    e.preventDefault();
+    login();
+};
+
+function api(url, method, data) {
+    var opts = {method: method||'GET', headers: {'Content-Type':'application/json'}};
+    if(data) opts.body = JSON.stringify(data);
+    return fetch(API+url, opts).then(function(r){return r.json();});
+}
+
+async function login() {
+    var u = document.getElementById('username').value;
+    var p = document.getElementById('password').value;
+    var r = await api('/api/admin/login','POST',{username:u,password:p});
+    if(r.success){
+        currentUser = r.admin;
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('mainApp').classList.remove('hidden');
+        loadTheme();
+        await loadData();
+        switchTab(0);
+    } else {
+        alert(r.message||'登录失败');
+    }
+}
+
+async function loadData() {
+    children = await api('/api/children');
+    bonusItems = await api('/api/bonus-items');
+    deductItems = await api('/api/deduct-items');
+    rewards = await api('/api/rewards');
+    admins = await api('/api/admins');
+    renderChildSelector();
+}
+
+function renderChildSelector() {
+    var s = document.getElementById('childSelect');
+    var h = '';
+    children.forEach(function(c){ h += '<option value="'+c.id+'">'+c.name+'</option>'; });
+    s.innerHTML = h;
+    s.onchange = switchChild;
+    if(children.length>0 && !currentChildId) currentChildId = children[0].id;
+}
+
+function switchChild() {
+    var v = document.getElementById('childSelect').value;
+    currentChildId = parseInt(v);
+    if(currentTab===0) renderPoints();
+    else if(currentTab===1) renderStatistics();
+}
+
+function switchTab(t) {
+    currentTab = t;
+    document.getElementById('tab0').classList.toggle('active',t===0);
+    document.getElementById('tab1').classList.toggle('active',t===1);
+    document.getElementById('tab2').classList.toggle('active',t===2);
+    // 控制小孩选择框的显示/隐藏
+    var selector = document.querySelector('.selector');
+    if(t===2) {
+        selector.style.display = 'none';
+    } else {
+        selector.style.display = 'block';
+    }
+    if(t===0) renderPoints();
+    else if(t===1) renderStatistics();
+    else renderSettings();
+}
+
+function logout() {
+    currentUser = null;
+    document.getElementById('mainApp').classList.add('hidden');
+    document.getElementById('loginScreen').classList.remove('hidden');
+}
+
+async function renderPoints() {
+    if(children.length === 0) {
+        document.getElementById('mainContent').innerHTML = '<div class="empty">暂无孩子数据，请先添加孩子</div>';
+        return;
+    }
+    var c = children.find(function(x){return x.id===currentChildId;});
+    if(!c) {
+        currentChildId = children[0].id;
+        c = children[0];
+    }
+    var h = '<div class="points"><div class="name">'+c.name+'</div><div class="num">'+c.points+'</div><div class="label">当前积分</div></div>';
+    h += '<div class="sub-tabs">';
+    h += '<div class="sub-tab '+(currentSubTab==='bonus'?'active':'')+'" onclick="showSubTab(\'bonus\')">➕ 加分</div>';
+    h += '<div class="sub-tab '+(currentSubTab==='deduct'?'active':'')+'" onclick="showSubTab(\'deduct\')">➖ 扣分</div>';
+    h += '<div class="sub-tab '+(currentSubTab==='reward'?'active':'')+'" onclick="showSubTab(\'reward\')">🎁 兑换</div>';
+    h += '<div class="sub-tab '+(currentSubTab==='record'?'active':'')+'" onclick="showSubTab(\'record\')">📋 记录</div>';
+    h += '</div><div id="ptsCnt"></div>';
+    document.getElementById('mainContent').innerHTML = h;
+    await showSubTab(currentSubTab);
+}
+
+async function showSubTab(t) {
+    currentSubTab = t;
+    var subs = document.querySelectorAll('.sub-tab');
+    var ts = ['bonus','deduct','reward','record'];
+    subs.forEach(function(x,i){ x.classList.toggle('active',ts[i]===t); });
+    var c = children.find(function(x){return x.id===currentChildId;});
+    var div = document.getElementById('ptsCnt');
+    if(t==='bonus'){
+        var h = '<div class="card"><div style="font-weight:bold;margin-bottom:12px">➕ 加分项目</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+        bonusItems.forEach(function(it){ h += '<div class="points-btn bonus" onclick="doBonus('+it.id+')"><div class="name">'+it.name+'</div><div class="pts">+'+it.points+'</div></div>'; });
+        h += '</div></div>'; div.innerHTML = h;
+    } else if(t==='deduct'){
+        var h = '<div class="card"><div style="font-weight:bold;margin-bottom:12px">➖ 扣分项目</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">';
+        deductItems.forEach(function(it){ h += '<div class="points-btn deduct" onclick="doDeduct('+it.id+')"><div class="name">'+it.name+'</div><div class="pts">-'+it.points+'</div></div>'; });
+        h += '</div></div>'; div.innerHTML = h;
+    } else if(t==='reward'){
+        var h = '<div class="card"><div style="font-weight:bold;margin-bottom:12px">🎁 可兑换奖励</div>';
+        rewards.forEach(function(r){
+            var ok = c.points>=r.points_required;
+            h += '<div class="item"><span>'+r.name+'</span><button class="btn" style="width:auto;padding:8px 12px;background:'+(ok?'#4CAF50':'#ddd')+';color:#fff;margin:0" '+(ok?'':'disabled')+' onclick="doRedeem('+r.id+')">'+r.points_required+'积分</button></div>';
+        });
+        h += '</div>'; div.innerHTML = h;
+    } else {
+        var apiUrl = '/api/records?childId='+currentChildId;
+        if(recordFilter.type) apiUrl += '&type='+recordFilter.type;
+        if(recordFilter.days) apiUrl += '&days='+recordFilter.days;
+        records = await api(apiUrl);
+        var totalPages = Math.ceil(records.length / recordsPerPage);
+        var startIndex = (recordPage - 1) * recordsPerPage;
+        var endIndex = startIndex + recordsPerPage;
+        var pageRecords = records.slice(startIndex, endIndex);
+        var h = '<div class="card">';
+        h += '<div style="font-weight:bold;margin-bottom:12px">📋 积分记录</div>';
+        h += '<div style="display:flex;gap:8px;margin-bottom:12px">';
+        h += '<select onchange="setRecordFilter(\'type\', this.value)" style="flex:1;padding:8px;border:1px solid #ddd;border-radius:6px">';
+        h += '<option value="">全部类型</option>';
+        h += '<option value="加分" '+(recordFilter.type==='加分'?'selected':'')+'>加分</option>';
+        h += '<option value="扣分" '+(recordFilter.type==='扣分'?'selected':'')+'>扣分</option>';
+        h += '<option value="兑换" '+(recordFilter.type==='兑换'?'selected':'')+'>兑换</option>';
+        h += '</select>';
+        h += '<select onchange="setRecordFilter(\'days\', this.value)" style="flex:1;padding:8px;border:1px solid #ddd;border-radius:6px">';
+        h += '<option value="">全部时间</option>';
+        h += '<option value="7" '+(recordFilter.days==='7'?'selected':'')+'>最近7天</option>';
+        h += '<option value="30" '+(recordFilter.days==='30'?'selected':'')+'>最近30天</option>';
+        h += '<option value="90" '+(recordFilter.days==='90'?'selected':'')+'>最近90天</option>';
+        h += '</select>';
+        h += '</div>';
+        if(records.length===0) h += '<div class="empty">暂无记录</div>';
+        else pageRecords.forEach(function(r){ h += '<div class="item"><span>'+r.item_name+'</span><span class="pts-tag '+(r.points>0?'pts-plus':'pts-minus')+'">'+(r.points>0?'+':'')+r.points+'</span></div>'; });
+        if(totalPages > 1) {
+            h += '<div style="display:flex;justify-content:center;align-items:center;margin-top:16px;gap:8px">';
+            h += '<button class="btn" style="width:auto;padding:8px 16px" onclick="changeRecordPage('+(recordPage-1)+')" '+(recordPage===1?'disabled':'')+'>上一页</button>';
+            h += '<span style="font-size:14px">'+recordPage+'/'+totalPages+'</span>';
+            h += '<button class="btn" style="width:auto;padding:8px 16px" onclick="changeRecordPage('+(recordPage+1)+')" '+(recordPage>=totalPages?'disabled':'')+'>下一页</button>';
+            h += '</div>';
+        }
+        h += '</div>'; div.innerHTML = h;
+    }
+}
+
+async function doBonus(id) {
+    var r = await api('/api/bonus','POST',{childId:currentChildId,itemId:id,adminId:currentUser.id});
+    if(r.success){ showToast('+'+r.points+'分'); await loadData(); renderPoints(); }
+    else alert(r.message);
+}
+
+async function doDeduct(id) {
+    var r = await api('/api/deduct','POST',{childId:currentChildId,itemId:id,adminId:currentUser.id});
+    if(r.success){ showToast(r.points+'分'); await loadData(); renderPoints(); }
+    else alert(r.message);
+}
+
+async function doRedeem(id) {
+    var r = await api('/api/redeem','POST',{childId:currentChildId,rewardId:id,adminId:currentUser.id});
+    if(r.success){ showToast('兑换成功！'); await loadData(); renderPoints(); }
+    else alert(r.message);
+}
+
+async function renderStatistics() {
+    var cid = currentChildId?currentChildId:'';
+    stats = await api('/api/statistics?childId='+cid+'&days=30');
+    var cs = currentChildId?children.filter(function(c){return c.id===currentChildId;}):children;
+    var tot = cs.reduce(function(s,c){return s+c.points;},0);
+    var h = '<div class="card"><div class="stats"><div class="num">'+tot+'</div><div class="lbl">总积分</div><div class="stats-row"><div class="stats-col"><div class="num" style="font-size:24px;color:#4CAF50">+'+(stats.today?stats.today.today_bonus:0)+'</div><div class="lbl">今日加分</div></div><div class="stats-col"><div class="num" style="font-size:24px;color:#F44336">-'+(stats.today?stats.today.today_deduct:0)+'</div><div class="lbl">今日扣分</div></div></div></div></div>';
+    h += '<div class="card"><div style="font-weight:bold;margin-bottom:12px">📈 30天趋势</div><canvas id="trendChart" height="150"></canvas></div>';
+    document.getElementById('mainContent').innerHTML = h;
+    if(stats.trend && stats.trend.length>0){
+        new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:stats.trend.map(function(t){return t.date.slice(5);}),datasets:[{label:'加分',data:stats.trend.map(function(t){return t.bonus;}),borderColor:'#4CAF50',fill:true},{label:'扣分',data:stats.trend.map(function(t){return t.deduct;}),borderColor:'#F44336',fill:true}]},options:{responsive:true}});
+    }
+}
+
+async function renderSettings() {
+    var h = '';
     
-    <script src="app.js"></script>
+    // 孩子管理
+    h += '<div class="card">';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'childManage\')"><span>👶 孩子管理</span><span>▼</span></div>';
+    h += '<div id="childManage" class="collapse-content">';
+    children.forEach(function(c){ h += '<div class="setting"><span>'+c.name+' ('+c.age+'岁) - '+c.points+'分</span><div class="btn-group"><button onclick="editChild('+c.id+')">编辑</button><button class="del" onclick="deleteChild('+c.id+')">删除</button></div></div>'; });
+    h += '<button class="btn" onclick="addChild()">+ 添加孩子</button>';
+    h += '</div></div>';
+    
+    // 项目管理
+    h += '<div class="card">';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'itemManage\')"><span>📋 项目管理</span><span>▼</span></div>';
+    h += '<div id="itemManage" class="collapse-content">';
+    
+    // 加分项管理
+    h += '<div style="margin-bottom:16px">';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'bonusManage\')"><span>➕ 加分项目 ('+bonusItems.length+')</span><span>▼</span></div>';
+    h += '<div id="bonusManage" class="collapse-content">';
+    bonusItems.forEach(function(it){ h += '<div class="setting"><span>'+it.name+' (+'+it.points+')</span><div class="btn-group"><button onclick="editBonusItem('+it.id+')">编辑</button><button class="del" onclick="deleteBonusItem('+it.id+')">删除</button></div></div>'; });
+    h += '<button class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="addBonusItem()">+ 添加</button>';
+    h += '</div></div>';
+    
+    // 扣分项管理
+    h += '<div style="margin-bottom:16px">';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'deductManage\')"><span>➖ 扣分项目 ('+deductItems.length+')</span><span>▼</span></div>';
+    h += '<div id="deductManage" class="collapse-content">';
+    deductItems.forEach(function(it){ h += '<div class="setting"><span>'+it.name+' (-'+it.points+')</span><div class="btn-group"><button onclick="editDeductItem('+it.id+')">编辑</button><button class="del" onclick="deleteDeductItem('+it.id+')">删除</button></div></div>'; });
+    h += '<button class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="addDeductItem()">+ 添加</button>';
+    h += '</div></div>';
+    
+    // 积分奖励管理
+    h += '<div>';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'rewardManage\')"><span>🎁 积分奖励 ('+rewards.length+')</span><span>▼</span></div>';
+    h += '<div id="rewardManage" class="collapse-content">';
+    rewards.forEach(function(r){ h += '<div class="setting"><span>'+r.name+' ('+r.points_required+'积分)</span><div class="btn-group"><button onclick="editReward('+r.id+')">编辑</button><button class="del" onclick="deleteReward('+r.id+')">删除</button></div></div>'; });
+    h += '<button class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="addReward()">+ 添加</button>';
+    h += '</div></div>';
+    
+    h += '</div></div>';
+    
+    // 用户管理
+    h += '<div class="card">';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'userManage\')"><span>👤 用户管理</span><span>▼</span></div>';
+    h += '<div id="userManage" class="collapse-content">';
+    admins.forEach(function(a){
+        var buttons = '';
+        if(currentUser.id === 1) {
+            // admin账号可以管理和编辑所有用户
+            buttons = (a.id !== 1 ? '<button onclick="editAdmin('+a.id+')">编辑</button><button class="del" onclick="deleteAdmin('+a.id+')">删除</button>' : '');
+        } else if(currentUser.id === a.id) {
+            // 其他用户仅能管理及编辑自己
+            buttons = '<button onclick="editAdmin('+a.id+')">编辑</button>';
+        }
+        h += '<div class="setting"><span>'+(a.nickname||a.username)+'</span><div class="btn-group">'+buttons+'</div></div>';
+    });
+    // 只有admin账号可以添加管理员
+    if(currentUser.id === 1) {
+        h += '<button class="btn" onclick="addAdmin()">+ 添加管理员</button>';
+    }
+    h += '</div></div>';
+    
+    // 系统设置
+    h += '<div class="card">';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'systemManage\')"><span>⚙️ 系统设置</span><span>▼</span></div>';
+    h += '<div id="systemManage" class="collapse-content">';
+    h += '<div class="setting" onclick="showPwdModal()"><span>🔑 修改密码</span><span>→</span></div>';
+    
+    // 主题管理
+    h += '<div style="margin-top:16px;">';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'themeManage\')"><span>🎨 主题管理</span><span>▼</span></div>';
+    h += '<div id="themeManage" class="collapse-content">';
+    h += '<div class="setting"><span>主题颜色</span><input type="color" id="primaryColor" value="#1976D2" onchange="updateTheme()" style="width:80px;height:50px;padding:4px;border-radius:8px;border:2px solid #e0e0e0;"></div>';
+    h += '<div class="setting"><span>背景颜色</span><input type="color" id="bgColor" value="#f5f5f5" onchange="updateTheme()" style="width:80px;height:50px;padding:4px;border-radius:8px;border:2px solid #e0e0e0;"></div>';
+    h += '<div class="setting"><span>卡片颜色</span><input type="color" id="cardColor" value="#ffffff" onchange="updateTheme()" style="width:80px;height:50px;padding:4px;border-radius:8px;border:2px solid #e0e0e0;"></div>';
+    h += '<button class="btn" style="margin-top:16px" onclick="resetTheme()">重置默认主题</button>';
+    h += '</div></div>';
+    
+    h += '</div></div>';
+    
+    document.getElementById('mainContent').innerHTML = h;
+}
+
+function toggleCollapse(id) {
+    var currentCollapse = document.getElementById(id);
+    var parentCollapse = currentCollapse.closest('.collapse-content');
+    
+    // 只关闭同一级别的折叠项
+    var siblings = [];
+    if (parentCollapse) {
+        // 如果有父折叠项，只关闭父折叠项内的其他子折叠项
+        siblings = Array.from(parentCollapse.querySelectorAll('.collapse-content')).filter(function(c) {
+            return c.id !== id;
+        });
+    } else {
+        // 如果没有父折叠项，关闭所有顶级折叠项
+        siblings = Array.from(document.querySelectorAll('.card > .collapse-content')).filter(function(c) {
+            return c.id !== id;
+        });
+    }
+    
+    siblings.forEach(function(sibling) {
+        sibling.classList.remove('active');
+    });
+    
+    // 切换当前折叠项
+    currentCollapse.classList.toggle('active');
+}
+
+function addChild(){ editingChildId=null; document.getElementById('childModalTitle').textContent='添加孩子'; document.getElementById('childName').value=''; document.getElementById('childAge').value=''; document.getElementById('childModal').classList.add('active'); }
+function editChild(id){ var c=children.find(function(x){return x.id===id;}); editingChildId=id; document.getElementById('childModalTitle').textContent='编辑'+c.name; document.getElementById('childName').value=c.name; document.getElementById('childAge').value=c.age; document.getElementById('childModal').classList.add('active'); }
+async function saveChild(){ var n=document.getElementById('childName').value.trim(); var a=parseInt(document.getElementById('childAge').value); if(!n||!a){alert('请填写完整');return;} await api('/api/children', 'POST', {id:editingChildId,name:n,age:a}); closeModal('childModal'); await loadData(); renderSettings(); }
+async function deleteChild(id){ if(!confirm('确定删除?'))return; await api('/api/children/'+id,'DELETE'); await loadData(); renderSettings(); }
+
+function addBonusItem(){ editingItemId=null; editingItemType='bonus'; document.getElementById('itemModalTitle').textContent='添加加分项'; document.getElementById('itemName').value=''; document.getElementById('itemPoints').value=''; document.getElementById('itemModal').classList.add('active'); }
+function editBonusItem(id){ var it=bonusItems.find(function(x){return x.id===id;}); editingItemId=id; editingItemType='bonus'; document.getElementById('itemModalTitle').textContent='编辑加分项'; document.getElementById('itemName').value=it.name; document.getElementById('itemPoints').value=it.points; document.getElementById('itemCategory').value=it.category; document.getElementById('itemModal').classList.add('active'); }
+async function deleteBonusItem(id){ if(!confirm('确定删除?'))return; await api('/api/bonus-items/'+id,'DELETE'); await loadData(); renderSettings(); }
+
+function addDeductItem(){ editingItemId=null; editingItemType='deduct'; document.getElementById('itemModalTitle').textContent='添加扣分项'; document.getElementById('itemName').value=''; document.getElementById('itemPoints').value=''; document.getElementById('itemModal').classList.add('active'); }
+function editDeductItem(id){ var it=deductItems.find(function(x){return x.id===id;}); editingItemId=id; editingItemType='deduct'; document.getElementById('itemModalTitle').textContent='编辑扣分项'; document.getElementById('itemName').value=it.name; document.getElementById('itemPoints').value=it.points; document.getElementById('itemCategory').value=it.category; document.getElementById('itemModal').classList.add('active'); }
+async function deleteDeductItem(id){ if(!confirm('确定删除?'))return; await api('/api/deduct-items/'+id,'DELETE'); await loadData(); renderSettings(); }
+
+async function saveItem(){ var n=document.getElementById('itemName').value.trim(); var p=parseInt(document.getElementById('itemPoints').value); var c=document.getElementById('itemCategory').value; if(!n||!p){alert('请填写完整');return;} var url = editingItemType==='bonus'?'/api/bonus-items':'/api/deduct-items'; await api(url,'POST',{id:editingItemId,name:n,points:p,category:c}); closeModal('itemModal'); await loadData(); renderSettings(); }
+
+function addReward(){ editingRewardId=null; document.getElementById('rewardModalTitle').textContent='添加奖励'; document.getElementById('rewardName').value=''; document.getElementById('rewardPoints').value=''; document.getElementById('rewardModal').classList.add('active'); }
+function editReward(id){ var r=rewards.find(function(x){return x.id===id;}); editingRewardId=id; document.getElementById('rewardModalTitle').textContent='编辑奖励'; document.getElementById('rewardName').value=r.name; document.getElementById('rewardPoints').value=r.points_required; document.getElementById('rewardCategory').value=r.category; document.getElementById('rewardModal').classList.add('active'); }
+async function saveReward(){ var n=document.getElementById('rewardName').value.trim(); var p=parseInt(document.getElementById('rewardPoints').value); var c=document.getElementById('rewardCategory').value; if(!n||!p){alert('请填写完整');return;} await api('/api/rewards','POST',{id:editingRewardId,name:n,points_required:p,category:c}); closeModal('rewardModal'); await loadData(); renderSettings(); }
+async function deleteReward(id){ if(!confirm('确定删除?'))return; await api('/api/rewards/'+id,'DELETE'); await loadData(); renderSettings(); }
+
+function addAdmin(){ document.getElementById('adminModalTitle').textContent='添加管理员'; document.getElementById('adminUsername').value=''; document.getElementById('adminNickname').value=''; document.getElementById('adminPassword').value=''; document.getElementById('adminModal').classList.add('active'); }
+function editAdmin(id){ var a=admins.find(function(x){return x.id===id;}); editingAdminId=id; document.getElementById('adminModalTitle').textContent='编辑管理员'; document.getElementById('adminUsername').value=a.username; document.getElementById('adminNickname').value=a.nickname; document.getElementById('adminPassword').value=''; document.getElementById('adminModal').classList.add('active'); }
+async function saveAdmin(){ var u=document.getElementById('adminUsername').value.trim(); var n=document.getElementById('adminNickname').value.trim(); var p=document.getElementById('adminPassword').value; if(!u){alert('请填写完整');return;} await api('/api/admins','POST',{id:editingAdminId,username:u,nickname:n,password:p}); editingAdminId=null; closeModal('adminModal'); await loadData(); renderSettings(); }
+async function deleteAdmin(id){ if(!confirm('确定删除?'))return; await api('/api/admins/'+id,'DELETE'); await loadData(); renderSettings(); }
+
+function showPwdModal(){ document.getElementById('oldPassword').value=''; document.getElementById('newPassword').value=''; document.getElementById('passwordModal').classList.add('active'); }
+async function changePassword(){ var o=document.getElementById('oldPassword').value; var n=document.getElementById('newPassword').value; if(!o||!n){alert('请填写完整');return;} var r = await api('/api/admin/password','POST',{adminId:currentUser.id,oldPassword:o,newPassword:n}); if(r.success){alert('修改成功');closeModal('passwordModal');}else alert(r.message); }
+
+// 主题管理函数
+function updateTheme() {
+    var primaryColor = document.getElementById('primaryColor').value;
+    var bgColor = document.getElementById('bgColor').value;
+    var cardColor = document.getElementById('cardColor').value;
+    
+    // 更新CSS变量
+    document.documentElement.style.setProperty('--primary-color', primaryColor);
+    document.documentElement.style.setProperty('--bg-color', bgColor);
+    document.documentElement.style.setProperty('--card-color', cardColor);
+    
+    // 保存到localStorage
+    localStorage.setItem('theme', JSON.stringify({
+        primaryColor: primaryColor,
+        bgColor: bgColor,
+        cardColor: cardColor
+    }));
+}
+
+function resetTheme() {
+    // 重置为默认主题
+    document.getElementById('primaryColor').value = '#1976D2';
+    document.getElementById('bgColor').value = '#f5f5f5';
+    document.getElementById('cardColor').value = '#ffffff';
+    updateTheme();
+}
+
+// 加载保存的主题
+function loadTheme() {
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+        var theme = JSON.parse(savedTheme);
+        // 检查DOM元素是否存在
+        var primaryColorEl = document.getElementById('primaryColor');
+        var bgColorEl = document.getElementById('bgColor');
+        var cardColorEl = document.getElementById('cardColor');
+        if (primaryColorEl && bgColorEl && cardColorEl) {
+            primaryColorEl.value = theme.primaryColor;
+            bgColorEl.value = theme.bgColor;
+            cardColorEl.value = theme.cardColor;
+        }
+        updateTheme();
+    }
+}
+
+function changeRecordPage(page) {
+    recordPage = page;
+    showSubTab('record');
+}
+
+function setRecordFilter(key, value) {
+    recordFilter[key] = value;
+    recordPage = 1; // 重置到第一页
+    showSubTab('record');
+}
+
+function closeModal(id){ document.getElementById(id).classList.remove('active'); }
+function showToast(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(function(){t.classList.remove('show');},2000); }
+</script>
 </body>
 </html>
