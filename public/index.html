@@ -332,7 +332,7 @@ async function renderStatistics() {
     h += '<div class="card"><div style="font-weight:bold;margin-bottom:12px">📈 30天趋势</div><canvas id="trendChart" height="150"></canvas></div>';
     document.getElementById('mainContent').innerHTML = h;
     if(stats.trend && stats.trend.length>0){
-        new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:stats.trend.map(function(t){return t.date.slice(5);}),datasets:[{label:'加分',data:stats.trend.map(function(t){return t.bonus;}),borderColor:'#4CAF50',fill:true},{label:'扣分',data:stats.trend.map(function(t){return t.deduct;}),borderColor:'#F44336',fill:true}]},options:{responsive:true}});
+        new Chart(document.getElementById('trendChart'),{type:'bar',data:{labels:stats.trend.map(function(t){return t.date.slice(5);}),datasets:[{label:'加分',data:stats.trend.map(function(t){return t.bonus;}),backgroundColor:'#4CAF50',borderColor:'#4CAF50'},{label:'扣分/兑换',data:stats.trend.map(function(t){return t.deduct;}),backgroundColor:'#F44336',borderColor:'#F44336'}]},options:{responsive:true,scales:{y:{beginAtZero:true,grid:{color:'#eee'}}},plugins:{legend:{position:'top'}}}});
     }
 }
 
