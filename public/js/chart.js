@@ -35,7 +35,7 @@ if (typeof Chart === 'undefined') {
         ctx2d.font = '14px Arial';
         ctx2d.fillStyle = '#333';
         ctx2d.textAlign = 'center';
-        ctx2d.fillText('30天趋势', canvas.width / 2, 20);
+        ctx2d.fillText('趋势图', canvas.width / 2, 20);
         
         // 绘制坐标轴
         ctx2d.strokeStyle = '#ddd';
@@ -128,7 +128,8 @@ if (typeof Chart === 'undefined') {
                 ctx2d.font = '12px Arial';
                 ctx2d.fillStyle = color;
                 ctx2d.textAlign = 'left';
-                ctx2d.fillText(dataset.label || '', padding.left + di * 80, 15);
+                var legendX = padding.left + (di === 0 ? 0 : 80);
+                ctx2d.fillText(dataset.label || '', legendX, 15);
             });
         } else {
             // 柱状图
@@ -151,7 +152,8 @@ if (typeof Chart === 'undefined') {
                 ctx2d.font = '12px Arial';
                 ctx2d.fillStyle = color;
                 ctx2d.textAlign = 'left';
-                ctx2d.fillText(dataset.label || '', padding.left + di * 80, 15);
+                var legendX = padding.left + (di === 0 ? 0 : 80);
+                ctx2d.fillText(dataset.label || '', legendX, 15);
             });
         }
         

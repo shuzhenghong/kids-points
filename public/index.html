@@ -365,11 +365,11 @@ async function doRedeem(id) {
 
 async function renderStatistics() {
     var cid = currentChildId?currentChildId:'';
-    stats = await api('/api/statistics?childId='+cid+'&days=30');
+    stats = await api('/api/statistics?childId='+cid+'&days=7');
     var cs = currentChildId?children.filter(function(c){return c.id===currentChildId;}):children;
     var tot = cs.reduce(function(s,c){return s+c.points;},0);
     var h = '<div class="card"><div class="stats"><div class="num">'+tot+'</div><div class="lbl">总积分</div><div class="stats-row"><div class="stats-col"><div class="num" style="font-size:24px;color:#4CAF50">+'+(stats.today?stats.today.today_bonus:0)+'</div><div class="lbl">今日加分</div></div><div class="stats-col"><div class="num" style="font-size:24px;color:#F44336">-'+(stats.today?stats.today.today_deduct:0)+'</div><div class="lbl">今日扣分</div></div></div></div></div>';
-    h += '<div class="card"><div style="font-weight:bold;margin-bottom:12px">📈 30天趋势</div><canvas id="trendChart" height="150"></canvas></div>';
+    h += '<div class="card"><div style="font-weight:bold;margin-bottom:12px">📈 7天趋势</div><canvas id="trendChart" height="150"></canvas></div>';
     document.getElementById('mainContent').innerHTML = h;
     if(stats.trend && stats.trend.length>0){
         new Chart(document.getElementById('trendChart'),{type:'line',data:{labels:stats.trend.map(function(t){return t.date.slice(5);}),datasets:[{label:'加分',data:stats.trend.map(function(t){return t.bonus;}),borderColor:'#4CAF50',backgroundColor:'rgba(76,175,80,0.1)',fill:true,tension:0.3},{label:'扣分/兑换',data:stats.trend.map(function(t){return t.deduct;}),borderColor:'#F44336',backgroundColor:'rgba(244,67,54,0.1)',fill:true,tension:0.3}]},options:{responsive:true,scales:{y:{grid:{color:'#eee'}}},plugins:{legend:{position:'top'}}}});
