@@ -493,8 +493,8 @@ app.get('/api/statistics', (req, res) => {
     // 今日数据
     const todayStmt = db.prepare(`
         SELECT 
-            SUM(CASE WHEN points > 0 THEN points ELSE 0 END) as today_bonus,
-            SUM(CASE WHEN points < 0 THEN ABS(points) ELSE 0 END) as today_deduct,
+            COALESCE(SUM(CASE WHEN points > 0 THEN points ELSE 0 END), 0) as today_bonus,
+            COALESCE(SUM(CASE WHEN points < 0 THEN ABS(points) ELSE 0 END), 0) as today_deduct,
             COUNT(*) as today_count
         FROM records
         WHERE date(timestamp) = date('now')
