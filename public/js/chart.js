@@ -128,8 +128,7 @@ if (typeof Chart === 'undefined') {
                 ctx2d.font = '12px Arial';
                 ctx2d.fillStyle = color;
                 ctx2d.textAlign = 'left';
-                var legendX = padding.left + (di === 0 ? 0 : 80);
-                ctx2d.fillText(dataset.label || '', legendX, 15);
+                ctx2d.fillText(dataset.label || '', padding.left, 15 + di * 20);
             });
         } else {
             // 柱状图
@@ -152,8 +151,7 @@ if (typeof Chart === 'undefined') {
                 ctx2d.font = '12px Arial';
                 ctx2d.fillStyle = color;
                 ctx2d.textAlign = 'left';
-                var legendX = padding.left + (di === 0 ? 0 : 80);
-                ctx2d.fillText(dataset.label || '', legendX, 15);
+                ctx2d.fillText(dataset.label || '', padding.left, 15 + di * 20);
             });
         }
         
