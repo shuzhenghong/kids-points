@@ -327,7 +327,7 @@ async function showSubTab(t) {
         h += '</select>';
         h += '</div>';
         if(records.length===0) h += '<div class="empty">暂无记录</div>';
-        else pageRecords.forEach(function(r){ h += '<div class="item"><span>'+r.item_name+'</span><span class="pts-tag '+(r.points>0?'pts-plus':'pts-minus')+'">'+(r.points>0?'+':'')+r.points+'</span></div>'; });
+        else pageRecords.forEach(function(r){ h += '<div class="item"><div style="flex:1"><div>'+r.item_name+'</div><div style="font-size:12px;color:#999">'+(r.admin_name||'')+' '+((r.timestamp||'').slice(0,10))+'</div></div><span class="pts-tag '+(r.points>0?'pts-plus':'pts-minus')+'">'+(r.points>0?'+':'')+r.points+'</span></div>'; });
         if(totalPages > 1) {
             h += '<div style="display:flex;justify-content:center;align-items:center;margin-top:16px;gap:8px">';
             h += '<button class="btn" style="width:auto;padding:8px 16px" onclick="changeRecordPage('+(recordPage-1)+')" '+(recordPage===1?'disabled':'')+'>上一页</button>';
