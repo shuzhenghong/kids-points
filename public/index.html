@@ -466,19 +466,33 @@ function toggleCollapse(id) {
     var header = currentCollapse.previousElementSibling;
     var arrow = header ? header.querySelector('.collapse-arrow') : null;
     
-    // 判断是顶级折叠项还是子级折叠项
-    var parentCard = header.closest('.card');
-    var allCollapsesInCard = parentCard.querySelectorAll('.collapse-content');
+    // 判断当前折叠项的级别
+    var parentElement = currentCollapse.parentElement;
+    var isTopLevel = parentElement.classList.contains('card');
     
-    // 关闭同一card内的其他折叠项
-    allCollapsesInCard.forEach(function(c) {
-        if (c.id !== id) {
-            c.classList.remove('active');
-            var sibHeader = c.previousElementSibling;
-            var sibArrow = sibHeader ? sibHeader.querySelector('.collapse-arrow') : null;
-            if (sibArrow) sibArrow.textContent = '▶';
-        }
-    });
+    if (isTopLevel) {
+        // 顶级折叠项：关闭所有顶级折叠项
+        var allTopCollapses = document.querySelectorAll('.card > .collapse-content');
+        allTopCollapses.forEach(function(c) {
+            if (c.id !== id) {
+                c.classList.remove('active');
+                var sibHeader = c.previousElementSibling;
+                var sibArrow = sibHeader ? sibHeader.querySelector('.collapse-arrow') : null;
+                if (sibArrow) sibArrow.textContent = '▶';
+            }
+        });
+    } else {
+        // 子级折叠项：关闭同父容器内的其他子级折叠项
+        var siblings = parentElement.querySelectorAll('.collapse-content');
+        siblings.forEach(function(c) {
+            if (c.id !== id) {
+                c.classList.remove('active');
+                var sibHeader = c.previousElementSibling;
+                var sibArrow = sibHeader ? sibHeader.querySelector('.collapse-arrow') : null;
+                if (sibArrow) sibArrow.textContent = '▶';
+            }
+        });
+    }
     
     // 切换当前折叠项
     var isActive = currentCollapse.classList.toggle('active');
