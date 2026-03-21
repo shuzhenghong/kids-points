@@ -382,7 +382,7 @@ async function renderSettings() {
     
     // 孩子管理
     h += '<div class="card">';
-    h += '<div class="collapse-header" onclick="toggleCollapse(\'childManage\')"><span>👶 孩子管理</span><span class="collapse-arrow">▼</span></div>';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'childManage\')"><span>👶 孩子管理</span><span class="collapse-arrow">▶</span></div>';
     h += '<div id="childManage" class="collapse-content">';
     children.forEach(function(c){ h += '<div class="setting"><span>'+c.name+' ('+c.age+'岁) - '+c.points+'分</span><div class="btn-group"><button onclick="editChild('+c.id+')">编辑</button><button class="del" onclick="deleteChild('+c.id+')">删除</button></div></div>'; });
     h += '<button class="btn" onclick="addChild()">+ 添加孩子</button>';
@@ -390,12 +390,12 @@ async function renderSettings() {
     
     // 项目管理
     h += '<div class="card">';
-    h += '<div class="collapse-header" onclick="toggleCollapse(\'itemManage\')"><span>📋 项目管理</span><span class="collapse-arrow">▼</span></div>';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'itemManage\')"><span>📋 项目管理</span><span class="collapse-arrow">▶</span></div>';
     h += '<div id="itemManage" class="collapse-content">';
     
     // 加分项管理
     h += '<div style="margin-bottom:16px">';
-    h += '<div class="collapse-header" onclick="toggleCollapse(\'bonusManage\')"><span>➕ 加分项目 ('+bonusItems.length+')</span><span class="collapse-arrow">▼</span></div>';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'bonusManage\')"><span>➕ 加分项目 ('+bonusItems.length+')</span><span class="collapse-arrow">▶</span></div>';
     h += '<div id="bonusManage" class="collapse-content">';
     bonusItems.forEach(function(it){ h += '<div class="setting"><span>'+it.name+' (+'+it.points+')</span><div class="btn-group"><button onclick="editBonusItem('+it.id+')">编辑</button><button class="del" onclick="deleteBonusItem('+it.id+')">删除</button></div></div>'; });
     h += '<button class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="addBonusItem()">+ 添加</button>';
@@ -403,7 +403,7 @@ async function renderSettings() {
     
     // 扣分项管理
     h += '<div style="margin-bottom:16px">';
-    h += '<div class="collapse-header" onclick="toggleCollapse(\'deductManage\')"><span>➖ 扣分项目 ('+deductItems.length+')</span><span class="collapse-arrow">▼</span></div>';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'deductManage\')"><span>➖ 扣分项目 ('+deductItems.length+')</span><span class="collapse-arrow">▶</span></div>';
     h += '<div id="deductManage" class="collapse-content">';
     deductItems.forEach(function(it){ h += '<div class="setting"><span>'+it.name+' (-'+it.points+')</span><div class="btn-group"><button onclick="editDeductItem('+it.id+')">编辑</button><button class="del" onclick="deleteDeductItem('+it.id+')">删除</button></div></div>'; });
     h += '<button class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="addDeductItem()">+ 添加</button>';
@@ -411,7 +411,7 @@ async function renderSettings() {
     
     // 积分奖励管理
     h += '<div>';
-    h += '<div class="collapse-header" onclick="toggleCollapse(\'rewardManage\')"><span>🎁 积分奖励 ('+rewards.length+')</span><span class="collapse-arrow">▼</span></div>';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'rewardManage\')"><span>🎁 积分奖励 ('+rewards.length+')</span><span class="collapse-arrow">▶</span></div>';
     h += '<div id="rewardManage" class="collapse-content">';
     rewards.forEach(function(r){ h += '<div class="setting"><span>'+r.name+' ('+r.points_required+'积分)</span><div class="btn-group"><button onclick="editReward('+r.id+')">编辑</button><button class="del" onclick="deleteReward('+r.id+')">删除</button></div></div>'; });
     h += '<button class="btn" style="background:#fff;color:#1976D2;border:1px solid #1976D2" onclick="addReward()">+ 添加</button>';
@@ -421,7 +421,7 @@ async function renderSettings() {
     
     // 用户管理
     h += '<div class="card">';
-    h += '<div class="collapse-header" onclick="toggleCollapse(\'userManage\')"><span>👤 用户管理</span><span class="collapse-arrow">▼</span></div>';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'userManage\')"><span>👤 用户管理</span><span class="collapse-arrow">▶</span></div>';
     h += '<div id="userManage" class="collapse-content">';
     admins.forEach(function(a){
         var buttons = '';
@@ -442,13 +442,13 @@ async function renderSettings() {
     
     // 系统设置
     h += '<div class="card">';
-    h += '<div class="collapse-header" onclick="toggleCollapse(\'systemManage\')"><span>⚙️ 系统设置</span><span class="collapse-arrow">▼</span></div>';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'systemManage\')"><span>⚙️ 系统设置</span><span class="collapse-arrow">▶</span></div>';
     h += '<div id="systemManage" class="collapse-content">';
     h += '<div class="setting" onclick="showPwdModal()"><span>🔑 修改密码</span><span>→</span></div>';
     
     // 主题管理
     h += '<div style="margin-top:16px;">';
-    h += '<div class="collapse-header" onclick="toggleCollapse(\'themeManage\')"><span>🎨 主题管理</span><span class="collapse-arrow">▼</span></div>';
+    h += '<div class="collapse-header" onclick="toggleCollapse(\'themeManage\')"><span>🎨 主题管理</span><span class="collapse-arrow">▶</span></div>';
     h += '<div id="themeManage" class="collapse-content">';
     h += '<div class="setting"><span>主题颜色</span><input type="color" id="primaryColor" value="#1976D2" onchange="updateTheme()" style="width:80px;height:50px;padding:4px;border-radius:8px;border:2px solid #e0e0e0;"></div>';
     h += '<div class="setting"><span>背景颜色</span><input type="color" id="bgColor" value="#f5f5f5" onchange="updateTheme()" style="width:80px;height:50px;padding:4px;border-radius:8px;border:2px solid #e0e0e0;"></div>';
@@ -467,29 +467,25 @@ function toggleCollapse(id) {
     var arrow = header ? header.querySelector('.collapse-arrow') : null;
     var parentCollapse = currentCollapse.closest('.collapse-content');
     
-    // 只关闭同一级别的折叠项
-    var siblings = [];
-    if (parentCollapse) {
-        siblings = Array.from(parentCollapse.querySelectorAll('.collapse-content')).filter(function(c) {
-            return c.id !== id;
-        });
-    } else {
-        siblings = Array.from(document.querySelectorAll('.card > .collapse-content')).filter(function(c) {
-            return c.id !== id;
-        });
-    }
+    // 获取所有折叠项
+    var allCollapses = parentCollapse 
+        ? parentCollapse.querySelectorAll('.collapse-content') 
+        : document.querySelectorAll('.card > .collapse-content');
     
-    siblings.forEach(function(sibling) {
-        sibling.classList.remove('active');
-        var sibHeader = sibling.previousElementSibling;
-        var sibArrow = sibHeader ? sibHeader.querySelector('.collapse-arrow') : null;
-        if (sibArrow) sibArrow.textContent = '▼';
+    // 关闭所有其他折叠项
+    allCollapses.forEach(function(c) {
+        if (c.id !== id && c.classList.contains('active')) {
+            c.classList.remove('active');
+            var sibHeader = c.previousElementSibling;
+            var sibArrow = sibHeader ? sibHeader.querySelector('.collapse-arrow') : null;
+            if (sibArrow) sibArrow.textContent = '▶';
+        }
     });
     
     // 切换当前折叠项
     var isActive = currentCollapse.classList.toggle('active');
     if (arrow) {
-        arrow.textContent = isActive ? '▲' : '▼';
+        arrow.textContent = isActive ? '▼' : '▶';
     }
 }
 
