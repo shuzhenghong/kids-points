@@ -466,26 +466,35 @@ function toggleCollapse(id) {
     var header = currentCollapse.previousElementSibling;
     var arrow = header ? header.querySelector('.collapse-arrow') : null;
     
-    // 判断当前折叠项的级别
+    // 判断当前折叠项是顶级还是子级
     var parentElement = currentCollapse.parentElement;
     var isTopLevel = parentElement.classList.contains('card');
     
-    if (isTopLevel) {
-        // 顶级折叠项：关闭所有顶级折叠项
-        var allTopCollapses = document.querySelectorAll('.card > .collapse-content');
-        allTopCollapses.forEach(function(c) {
-            if (c.id !== id) {
-                c.classList.remove('active');
-                var sibHeader = c.previousElementSibling;
-                var sibArrow = sibHeader ? sibHeader.querySelector('.collapse-arrow') : null;
-                if (sibArrow) sibArrow.textContent = '▶';
+    // 定义顶级和子级ID
+    var topLevelIds = ['childManage', 'itemManage', 'userManage', 'systemManage'];
+    var subLevelIds = ['bonusManage', 'deductManage', 'rewardManage', 'themeManage'];
+    
+    var isCurrentTopLevel = topLevelIds.indexOf(id) !== -1;
+    var isCurrentSubLevel = subLevelIds.indexOf(id) !== -1;
+    
+    if (isCurrentTopLevel) {
+        // 顶级：关闭其他顶级
+        topLevelIds.forEach(function(tid) {
+            if (tid !== id) {
+                var c = document.getElementById(tid);
+                if (c && c.classList.contains('active')) {
+                    c.classList.remove('active');
+                    var h = c.previousElementSibling;
+                    var a = h ? h.querySelector('.collapse-arrow') : null;
+                    if (a) a.textContent = '▶';
+                }
             }
         });
-    } else {
-        // 子级折叠项：关闭同父容器内的其他子级折叠项
+    } else if (isCurrentSubLevel) {
+        // 子级：关闭同父容器内的其他子级
         var siblings = parentElement.querySelectorAll('.collapse-content');
         siblings.forEach(function(c) {
-            if (c.id !== id) {
+            if (c.id !== id && subLevelIds.indexOf(c.id) !== -1) {
                 c.classList.remove('active');
                 var sibHeader = c.previousElementSibling;
                 var sibArrow = sibHeader ? sibHeader.querySelector('.collapse-arrow') : null;
