@@ -338,18 +338,24 @@ async function showSubTab(t) {
 }
 
 async function doBonus(id) {
+    var item = bonusItems.find(function(x){return x.id===id;});
+    if(!confirm('确定要给 '+item.name+' +'+item.points+' 分吗？')) return;
     var r = await api('/api/bonus','POST',{childId:currentChildId,itemId:id,adminId:currentUser.id});
     if(r.success){ showToast('+'+r.points+'分'); await loadData(); renderPoints(); }
     else alert(r.message);
 }
 
 async function doDeduct(id) {
+    var item = deductItems.find(function(x){return x.id===id;});
+    if(!confirm('确定要扣 '+item.name+' '+item.points+' 分吗？')) return;
     var r = await api('/api/deduct','POST',{childId:currentChildId,itemId:id,adminId:currentUser.id});
     if(r.success){ showToast(r.points+'分'); await loadData(); renderPoints(); }
     else alert(r.message);
 }
 
 async function doRedeem(id) {
+    var reward = rewards.find(function(x){return x.id===id;});
+    if(!confirm('确定要用 '+reward.points_required+' 积分兑换 "'+reward.name+'" 吗？')) return;
     var r = await api('/api/redeem','POST',{childId:currentChildId,rewardId:id,adminId:currentUser.id});
     if(r.success){ showToast('兑换成功！'); await loadData(); renderPoints(); }
     else alert(r.message);
