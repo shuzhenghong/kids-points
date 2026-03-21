@@ -1,4 +1,4 @@
-# 家庭积分管理系统V2 Dockerfile
+# 家庭积分管理系统V3 Dockerfile
 FROM node:18-alpine
 
 WORKDIR /app
@@ -16,7 +16,7 @@ RUN npm install
 COPY . .
 
 # 暴露端口
-EXPOSE 3000
+EXPOSE 3002
 
 # 启动命令
 CMD ["node", "server.js"]

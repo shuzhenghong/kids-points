@@ -5,7 +5,7 @@ services:
     build: .
     container_name: kids-points
     ports:
-      - "3000:3000"
+      - "3002:3002"
     volumes:
       - ./data:/app/data
     restart: unless-stopped
