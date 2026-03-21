@@ -24,7 +24,10 @@ if (typeof Chart === 'undefined') {
         // 计算数据范围
         var allData = datasets.map(function(d) { return d.data || []; }).flat();
         var maxValue = Math.max(...allData, 1);
-        var minValue = Math.min(...allData, 0);
+        var minValue = Math.min(...allData, -1);
+        // 确保范围包含0
+        if (maxValue > 0 && minValue > 0) minValue = 0;
+        if (maxValue < 0 && minValue < 0) maxValue = 0;
         
         // 绘图区域
         var padding = { top: 30, right: 20, bottom: 40, left: 40 };
