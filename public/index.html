@@ -167,6 +167,10 @@ function api(url, method, data) {
 async function login() {
     var u = document.getElementById('username').value;
     var p = document.getElementById('password').value;
+    if (!u || !p) {
+        alert('请输入账号和密码');
+        return;
+    }
     var r = await api('/api/admin/login','POST',{username:u,password:p});
     if(r.success){
         currentUser = r.admin;
