@@ -3,6 +3,7 @@ version: '3.8'
 services:
   kids-points:
     build: .
+    image: kidspoints:latest
     container_name: kids-points
     ports:
       - "3002:3002"

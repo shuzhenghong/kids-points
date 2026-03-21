@@ -3,17 +3,14 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# 安装构建工具和better-sqlite3依赖
-RUN apk add --no-cache python3 make g++
+# 安装构建工具
+RUN apk add --no-cache python3 make g++ git
 
-# 复制package.json
-COPY package.json ./
+# 复制所有代码
+COPY . .
 
 # 安装依赖
 RUN npm install
-
-# 复制源代码
-COPY . .
 
 # 暴露端口
 EXPOSE 3002
