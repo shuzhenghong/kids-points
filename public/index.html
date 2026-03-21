@@ -466,11 +466,12 @@ function toggleCollapse(id) {
     var header = currentCollapse.previousElementSibling;
     var arrow = header ? header.querySelector('.collapse-arrow') : null;
     
-    // 获取所有顶级折叠项（直接在 .card 下的 .collapse-content）
-    var allTopCollapses = document.querySelectorAll('.card > .collapse-content');
+    // 判断是顶级折叠项还是子级折叠项
+    var parentCard = header.closest('.card');
+    var allCollapsesInCard = parentCard.querySelectorAll('.collapse-content');
     
-    // 关闭所有顶级折叠项
-    allTopCollapses.forEach(function(c) {
+    // 关闭同一card内的其他折叠项
+    allCollapsesInCard.forEach(function(c) {
         if (c.id !== id) {
             c.classList.remove('active');
             var sibHeader = c.previousElementSibling;
