@@ -25,9 +25,13 @@ if (typeof Chart === 'undefined') {
         var allData = datasets.map(function(d) { return d.data || []; }).flat();
         var maxValue = Math.max(...allData, 1);
         var minValue = Math.min(...allData, -1);
-        // 确保范围包含0
+        // 确保范围包含0，并添加边距
         if (maxValue > 0 && minValue > 0) minValue = 0;
         if (maxValue < 0 && minValue < 0) maxValue = 0;
+        // 添加边距让数据不在边缘
+        var range = maxValue - minValue;
+        maxValue = maxValue + range * 0.1;
+        minValue = minValue - range * 0.1;
         
         // 绘图区域
         var padding = { top: 30, right: 20, bottom: 40, left: 40 };
