@@ -445,7 +445,7 @@ app.get('/api/statistics', (req, res) => {
     let trendSql = `
         SELECT date(timestamp) as date, 
                SUM(CASE WHEN points > 0 THEN points ELSE 0 END) as bonus,
-               SUM(CASE WHEN points < 0 THEN points ELSE 0 END) as deduct
+               SUM(CASE WHEN points < 0 THEN ABS(points) ELSE 0 END) as deduct
         FROM records
         WHERE timestamp >= datetime('now', '-' || ? || ' days')
     `;
