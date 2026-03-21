@@ -90,7 +90,7 @@ input,select{width:100%;padding:14px;margin-bottom:16px;border:1px solid #ddd;bo
 <form id="loginForm">
 <input type="text" id="username" name="username" value="admin" placeholder="管理员账号" autocomplete="off">
 <input type="password" id="password" name="password" value="123456" placeholder="密码" autocomplete="off">
-<button type="button" class="btn" id="loginBtn">登录</button>
+<button type="button" class="btn" onclick="alert('测试'); login()">登录</button>
 </form>
 </div></div>
 <div id="mainApp" class="app hidden">
@@ -153,10 +153,6 @@ var recordFilter = { type: '', days: '' };
 if (!checkLogin()) {
     // 未登录，保持登录页面显示
 }
-
-document.getElementById('loginBtn').onclick = function() {
-    login();
-};
 
 function api(url, method, data) {
     var opts = {method: method||'GET', headers: {'Content-Type':'application/json'}};
