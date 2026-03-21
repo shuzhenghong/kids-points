@@ -94,7 +94,7 @@ input,select{width:100%;padding:14px;margin-bottom:16px;border:1px solid #ddd;bo
 </form>
 </div></div>
 <div id="mainApp" class="app hidden">
-<div class="header"><span>家庭积分管理</span><span onclick="logout()">👤 退出</span></div>
+<div class="header"><span>家庭积分管理 <small id="currentUserName"></small></span><span onclick="logout()">👤 退出</span></div>
 <div class="selector"><select id="childSelect"></select></div>
 <div class="content" id="mainContent"></div>
 <div class="tabs">
@@ -174,6 +174,7 @@ async function login() {
         localStorage.setItem('kidsPointsUser', JSON.stringify(r.admin));
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('mainApp').classList.remove('hidden');
+        document.getElementById('currentUserName').textContent = '(' + r.admin.nickname + ')';
         loadTheme();
         await loadData();
         switchTab(0);
@@ -192,6 +193,7 @@ function checkLogin() {
                 currentUser = user;
                 document.getElementById('loginScreen').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
+                document.getElementById('currentUserName').textContent = '(' + user.nickname + ')';
                 loadTheme();
                 loadData().then(function() { switchTab(0); });
                 return true;
@@ -204,6 +206,7 @@ function checkLogin() {
 function logout() {
     localStorage.removeItem('kidsPointsUser');
     currentUser = null;
+    document.getElementById('currentUserName').textContent = '';
     document.getElementById('loginScreen').classList.remove('hidden');
     document.getElementById('mainApp').classList.add('hidden');
 }
