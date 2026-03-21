@@ -149,6 +149,11 @@ var children = [], bonusItems = [], deductItems = [], rewards = [], records = []
 var recordPage = 1, recordsPerPage = 10;
 var recordFilter = { type: '', days: '' };
 
+// 页面加载时检查登录状态
+if (!checkLogin()) {
+    // 未登录，保持登录页面显示
+}
+
 document.getElementById('loginForm').onsubmit = function(e){
     e.preventDefault();
     login();
@@ -166,6 +171,7 @@ async function login() {
     var r = await api('/api/admin/login','POST',{username:u,password:p});
     if(r.success){
         currentUser = r.admin;
+        localStorage.setItem('kidsPointsUser', JSON.stringify(r.admin));
         document.getElementById('loginScreen').classList.add('hidden');
         document.getElementById('mainApp').classList.remove('hidden');
         loadTheme();
@@ -174,6 +180,32 @@ async function login() {
     } else {
         alert(r.message||'登录失败');
     }
+}
+
+// 检查登录状态
+function checkLogin() {
+    var savedUser = localStorage.getItem('kidsPointsUser');
+    if (savedUser) {
+        try {
+            var user = JSON.parse(savedUser);
+            if (user && user.id) {
+                currentUser = user;
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                loadTheme();
+                loadData().then(function() { switchTab(0); });
+                return true;
+            }
+        } catch(e) {}
+    }
+    return false;
+}
+
+function logout() {
+    localStorage.removeItem('kidsPointsUser');
+    currentUser = null;
+    document.getElementById('loginScreen').classList.remove('hidden');
+    document.getElementById('mainApp').classList.add('hidden');
 }
 
 async function loadData() {
