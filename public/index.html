@@ -254,7 +254,9 @@ function switchTab(t) {
 }
 
 function logout() {
+    localStorage.removeItem('kidsPointsUser');
     currentUser = null;
+    document.getElementById('currentUserName').textContent = '';
     document.getElementById('mainApp').classList.add('hidden');
     document.getElementById('loginScreen').classList.remove('hidden');
 }
