@@ -38,7 +38,7 @@ npm install
 npm start
 ```
 
-访问 http://localhost:3000
+访问 http://localhost:3002
 
 ### Docker 部署
 
@@ -87,8 +87,8 @@ kids-points-v2/
 
 ## 🔧 配置说明
 
-- 默认端口: 3000
-- 默认管理员: admin / admin123
+- 默认端口: 3002
+- 默认管理员: admin / 123456
 - 数据库文件: data/points.db
 
 ## 📝 更新日志
