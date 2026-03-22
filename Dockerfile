@@ -1,16 +1,16 @@
 # 家庭积分管理系统V3 Dockerfile
-FROM node:18-alpine
+FROM node:18-slim
 
 WORKDIR /app
 
-# 安装构建工具
-RUN apk add --no-cache python3 make g++ git
-
-# 复制所有代码
-COPY . .
+# 复制依赖文件
+COPY package*.json ./
 
 # 安装依赖
-RUN npm install
+RUN npm install --production
+
+# 复制代码
+COPY . .
 
 # 暴露端口
 EXPOSE 3002
